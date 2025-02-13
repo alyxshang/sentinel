@@ -111,7 +111,7 @@ The JSON API has two API routes:
 
 #### Verifying user account credentials
 
-The API route for validating user credentials accepts `GET` requests with a JSON payload
+The API route for validating user credentials accepts `POST` requests with a JSON payload
 of the following shape:
 
 ```JSON
