@@ -1,0 +1,13 @@
+[Unit]
+Description=An API service for monitoring your server.
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/local/bin/sentinel &
+Type=simple
+RemainAfterExit =yes
+Environment="SENTINEL_PORT=8000"
+Environment="SENTINEL_HOST=127.0.0.1"
+
+[Install]
+WantedBy=multi-user.target

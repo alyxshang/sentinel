@@ -1,0 +1,57 @@
+on: [push]
+env:
+  SENTINEL_PORT: "8000"
+  SENTINEL_HOST: "127.0.0.1"
+name: Sentinel CI
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    steps:
+
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      
+      - name: "Installing the required libraries."
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            tree \
+            clang \
+            libclang-dev \
+            libpam0g-dev \
+          
+      - name: "Building Sentinel."
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release
+
+      - name: "Creating a fake user."
+        run: sudo useradd -m test
+        
+      - name: "Setting a password for this user."
+        run: sudo usermod --password test test
+      
+      - name: "Running unit tests."
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+      
+      - name: "Building the Debian package."
+        run: |
+          cd packaging
+          bash debian.sh
+          mv *.deb ../sentinel-v.0.1.0-amd64.deb
+      
+      - name: "Test the package."
+        run: sudo dpkg -i ./*.deb
+      
+      - name: "Check for package files."
+        run: |
+          file /lib/systemd/system/sentinel.service
+          file /usr/local/bin/sentinel
+
+      - name: "Checking if Sentinel is running."
+        run: systemctl is-active --quiet sentinel

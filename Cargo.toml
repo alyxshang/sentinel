@@ -1,0 +1,25 @@
+[package]
+name = "sentinel"
+version = "0.1.0"
+edition = "2021"
+license-file = "LICENSE"
+authors = ["Alyx Shang"]
+description= "An API service for monitoring your server."
+homepage = "https://github.com/alyxshang/mandy"
+repository = "https://github.com/alyxshang/mandy"
+readme = "README.markdown"
+
+[dependencies]
+pwcheck = "0.2"
+sysinfo = "0.33.1"
+actix-web = "4.9.0"
+actix-cors = "0.7.0"
+systemstat = "0.2.4"
+env_logger = "0.10.0"
+serde = { version = "1.0.217", features = ["derive"] }
+
+[profile.release]
+lto = true
+strip = true
+opt-level = "z"
+codegen-units = 1
